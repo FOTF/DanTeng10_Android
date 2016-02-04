@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:layout_alignParentBottom="true"
+    android:layout_gravity="top"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:orientation="vertical"
+    android:background="#fcfff4f2"
+    android:layout_margin="10dp">
 
-    <!-- <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >  -->
-       	
         <TextView
-        android:id="@+id/content_title_id"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:text=""
-        android:textSize="20dip" />
+            android:id="@+id/content_title_id"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="测试"
+            android:layout_margin="5dp"
+            android:textSize="20sp"
+            android:autoText="true" />
 
         <com.ant.liao.GifView
             android:id="@+id/contont_gif_image_id"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:paddingRight="14px"
+            android:layout_margin="5dp"
             android:enabled="false" />
-         <!--<ImageView
-            android:id="@+id/contont_image_id"
-            android:layout_width="1155dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/icon"
-            android:layout_gravity="center"/>-->
-    <!-- </FrameLayout> -->
-
 </LinearLayout>
