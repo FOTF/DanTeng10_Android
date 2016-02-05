@@ -5,21 +5,24 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import android.app.AlertDialog;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.View;
 
-import com.ant.liao.GifView;
+import com.loopj.android.http.AsyncHttpClient;
 
 import org.apache.commons.io.IOUtils;
 
-import fotf.space.danteng10.BallacheTenMainActivity;
 import fotf.space.danteng10.R;
+import pl.droidsonroids.gif.GifImageView;
 
-public class ImageASyncTask extends AsyncTask<Object, Integer, byte[]> {
 
-	private GifView mGifView = null;
+
+public class ImageASyncTask extends AsyncTask<Object, Integer, Bitmap> {
+
+	private GifImageView mGifView = null;
 
 	private int _displaywidth;
 	private int _displayheight = 400;
@@ -27,16 +30,18 @@ public class ImageASyncTask extends AsyncTask<Object, Integer, byte[]> {
 
 	private View view;
 
+	private AsyncHttpClient asyncHttpClient;
+
 	@Override
 	protected void onPreExecute(){
 	}
 	
 	@Override
-	protected byte[] doInBackground(Object... params) {
+	protected Bitmap doInBackground(Object... params) {
 		String url = (String) params[0];
-		mGifView = (GifView) params[1];
+		mGifView = (GifImageView) params[1];
 		view = (View) params[2];
-		byte[] bitmap = null;
+		Bitmap bitmap = null;
 		try {
 			bitmap = getBitmap(url, _displaypixels, true);
 		} catch (Exception e) {
@@ -48,33 +53,27 @@ public class ImageASyncTask extends AsyncTask<Object, Integer, byte[]> {
 	/**
 	 * 通过URL获得网上图片。如:http://www.xxxxxx.com/xx.jpg
 	 * */
-	public byte[] getBitmap(String url, int displaypixels, Boolean isBig)
+	public Bitmap getBitmap(String url, int displaypixels, Boolean isBig)
 			throws MalformedURLException, IOException {
-//		Bitmap bmp = null;
+		Bitmap bmp = null;
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		InputStream stream = new URL(url).openStream();
 		byte[] bytes = getBytes(stream);
-		//if(getImageExtendName(url).equals("jpg")){
-			/*BitmapFactory.Options opts = new BitmapFactory.Options();
-			InputStream stream = new URL(url).openStream();
-			bytes = getBytes(stream);
-			// 这3句是处理图片溢出的begin( 如果不需要处理溢出直接 opts.inSampleSize=1;)
-			opts.inJustDecodeBounds = true;
-			BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opts);
-			opts.inSampleSize = computeSampleSize(opts, -1, displaypixels);
-			// end
-			opts.inJustDecodeBounds = false;
-			bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opts);*/
-		//}
-		return bytes;
+		// 这3句是处理图片溢出的begin( 如果不需要处理溢出直接 opts.inSampleSize=1;)
+		opts.inJustDecodeBounds = true;
+		BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opts);
+		opts.inSampleSize = computeSampleSize(opts, -1, displaypixels);
+		// end
+		opts.inJustDecodeBounds = false;
+		bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opts);
+		return bmp;
 	}
 
 	@Override
-	protected void onPostExecute(byte[] result) {
-		if (mGifView != null && result != null) {
-			mGifView.setGifImage(R.drawable.gif1);
-//			if (null != result)
-//				System.gc();
+	protected void onPostExecute(Bitmap result) {
+		if (mGifView != null && null != result) {
+			if (null != result)
+				System.gc();
 		}
 	}
 
@@ -130,17 +129,5 @@ public class ImageASyncTask extends AsyncTask<Object, Integer, byte[]> {
 		} else {
 			return upperBound;
 		}
-	}
-
-	/**
-	 * 描述： 获取图片的格式 <br/>
-	 * 作者： fotf
-	 * 
-	 * @param url
-	 *            文件路径
-	 * @return String <br/>
-	 */
-	public String getImageExtendName(String url) {
-		return url.substring(url.lastIndexOf(".") + 1, url.length());
 	}
 }

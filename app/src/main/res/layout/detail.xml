@@ -20,12 +20,9 @@
             android:textSize="20sp"
             android:autoText="true" />
 
-        <com.ant.liao.GifView
+        <pl.droidsonroids.gif.GifImageView
             android:id="@+id/contont_gif_image_id"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:paddingRight="14px"
-            android:layout_margin="5dp"
-            android:enabled="false" />
+            android:layout_gravity="center" />
 </LinearLayout>

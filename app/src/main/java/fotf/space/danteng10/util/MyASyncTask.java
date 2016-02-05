@@ -40,10 +40,10 @@ public class MyASyncTask extends AsyncTask<Object, Integer, List<ContentInfor>> 
 		bi = (ButtonInfor) params[3];
 		state = (Integer) params[4];
 
-		ContentInfor ci = new ContentInfor("test1", "http://mpic.spriteapp.cn/ugc/2016/02/01/56aea47633e5b.gif");
-		details.add(ci);
-//		ContentInfor ci2 = new ContentInfor("test2", "http://mpic.spriteapp.cn/ugc/2016/02/01/56aea47633e5b.gif");
-//		details.add(ci2);
+//		ContentInfor ci = new ContentInfor("test1", "http://mpic.spriteapp.cn/ugc/2016/02/01/56aea47633e5b.gif");
+//		details.add(ci);
+		ContentInfor ci2 = new ContentInfor("test2", "http://ww2.sinaimg.cn/mw600/6dae210fgw1f0jxzfm3zuj20c80e7abe.jpg");
+		details.add(ci2);
 //		ContentInfor ci3 = new ContentInfor("test3", "http://mpic.spriteapp.cn/ugc/2016/02/01/56aea47633e5b.gif");
 //		details.add(ci3);
 		return details;

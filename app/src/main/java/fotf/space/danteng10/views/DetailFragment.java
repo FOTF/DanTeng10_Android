@@ -9,9 +9,15 @@ import fotf.space.danteng10.util.ImageASyncTask;
 import fotf.space.danteng10.util.MyASyncTask;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,17 +25,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.ant.liao.GifView;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.apache.http.Header;
 
 import fotf.space.danteng10.R;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 @SuppressLint("ValidFragment")
 public class DetailFragment extends Fragment{
 	
 	private TextView mTextView;
-	private GifView mgifView;
 
+	private GifImageView mgifView;
+	private GifDrawable gifDrawable;
 	private String title;
 	private String imgSrc;
 
@@ -38,6 +51,9 @@ public class DetailFragment extends Fragment{
 
 	private int CHECKED_COLOR = Color.rgb(29, 118, 199); //选中蓝色
 	private int UNCHECKED_COLOR = Color.GRAY;   //自然灰色
+
+	private AsyncHttpClient asyncHttpClient;
+	private Dialog dialog;
 	
 	public DetailFragment() {
 		super();
@@ -55,48 +71,57 @@ public class DetailFragment extends Fragment{
 		System.out.println("DetailFragment is on create ...");
 	}
 
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.detail, container, false);
 		mTextView = (TextView) view.findViewById(R.id.content_title_id);
 		mTextView.setTextColor(UNCHECKED_COLOR);
-		mgifView = (GifView)view.findViewById(R.id.contont_gif_image_id);
+		mgifView = (GifImageView)view.findViewById(R.id.contont_gif_image_id);
 		setTitle(title);
-		ImageASyncTask ias = new ImageASyncTask();
-		ias.execute(imgSrc, mgifView, view);
 
-//		mgifView.setGifImage(R.drawable.gif1);
+		this.loadImage(view);
+
+		/*ImageASyncTask ias = new ImageASyncTask();
+		ias.execute(imgSrc, mgifView, view);*/
 		return view;
 	}
-	
-	/*@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		System.out.println("DetailFragment is before onCreateView ...");
-		View view = inflater.inflate(R.layout.detail, container, false);
-		mTextView = (TextView) view.findViewById(R.id.content_title_id);
-		mTextView.setTextColor(UNCHECKED_COLOR);
-		gifView = (GifView)view.findViewById(R.id.contont_gif_image_id);
-		setTitle(title);
-		try {
-			InputStream is = getHttpIS("http://mpic.spriteapp.cn/ugc/2016/02/01/56aea47633e5b.gif");
-			gifView.setGifImage(is);
-		} catch (Exception e) {
-			Writer writer = new StringWriter();
-			PrintWriter pw = new PrintWriter(writer);
-			e.printStackTrace(pw);
-			String errorresult = " you = " + writer.toString();
-			new  AlertDialog.Builder(view.getContext())
-					.setTitle("标题" )
-					.setMessage("fuck=" + errorresult)
-					.setPositiveButton("确定" ,  null )
-					.show();
-			gifView.setGifImage(R.drawable.gif1);
-		}
-		return view;
-	}*/
 
+	private void loadImage(final View view){
+		dialog = ProgressDialog.show(view.getContext(), "加载中", "加载网络图片中");
+		asyncHttpClient = new AsyncHttpClient();
+		asyncHttpClient
+				.get(imgSrc,
+						new AsyncHttpResponseHandler() {
+							@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+							@Override
+							public void onSuccess(int arg0, Header[] arg1,
+												  byte[] arg2) {
+								// TODO Auto-generated method stub
+
+								GifDrawable drawable = null;
+								try {
+									drawable = new GifDrawable(arg2);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								mgifView.setBackground(drawable);
+								dialog.dismiss();
+							}
+
+							@Override
+							public void onFailure(int arg0, Header[] arg1,
+												  byte[] arg2, Throwable arg3) {
+								// TODO Auto-generated method stub
+								Toast.makeText(view.getContext(),
+										"加载网络图片出错", Toast.LENGTH_SHORT).show();
+								dialog.dismiss();
+							}
+						});
+	}
+	
 	/**
 	 * 设置图片大小
 	 */
@@ -105,7 +130,6 @@ public class DetailFragment extends Fragment{
 		params.width = DEFAULT_IMAGE_WIDTH;
 		params.height = DEFAULT_IMAGE_HEIGHT;
 		gifView.setLayoutParams(params);
-
 	}*/
 	
 	public void setTitle(String title){
